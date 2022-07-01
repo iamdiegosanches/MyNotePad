@@ -12,6 +12,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.Scanner;
 
 public class TextEditor extends JFrame implements ActionListener {
 
@@ -58,6 +59,9 @@ public class TextEditor extends JFrame implements ActionListener {
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 
         open = new JMenuItem("Open...");
+        open.addActionListener(this);
+        open.setAccelerator(KeyStroke.getKeyStroke('O',
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 
         undo = new JMenuItem("Undo      ");
         undo.addActionListener(this);
@@ -125,13 +129,43 @@ public class TextEditor extends JFrame implements ActionListener {
                 cre.printStackTrace();
             }
         }
+
         if(e.getSource() == save) {
             saveFile();
         }
+
+        if(e.getSource() == open) {
+            openFile();
+        }
+    }
+
+    private void openFile() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File("D:/"));
+
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files", "txt");
+        fileChooser.setFileFilter(filter);
+
+        int response = fileChooser.showOpenDialog(null);
+
+        if(response == JFileChooser.APPROVE_OPTION) {
+            File file = new File(fileChooser.getSelectedFile().getAbsolutePath());
+
+            try (Scanner fileIn = new Scanner(file)) {
+                if (file.isFile()) {
+                    while (fileIn.hasNextLine()) {
+                        String line = fileIn.nextLine() + "\n";
+                        textArea.append(line);
+                    }
+                }
+            } catch (FileNotFoundException e1) {
+                e1.printStackTrace();
+            }
+        }
+
     }
 
     private void saveFile() {
-
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File("D:/"));
 
