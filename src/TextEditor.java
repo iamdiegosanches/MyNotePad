@@ -2,6 +2,7 @@ package src;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.UndoManager;
 import java.awt.*;
@@ -39,21 +40,27 @@ public class TextEditor extends JFrame implements ActionListener {
     private void createMenuBar() {
         menuBar = new JMenuBar();
         file = new JMenu("File");
+        file.setMnemonic(KeyEvent.VK_F);
 
         edit = new JMenu("Edit");
         edit.setMnemonic(KeyEvent.VK_E);
 
         newWindow = new JMenuItem("New window");
         newWindow.addActionListener(this);
+        newWindow.setAccelerator(KeyStroke.getKeyStroke('N',
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 
         save = new JMenuItem("Save...");
         save.addActionListener(this);
+        save.setAccelerator(KeyStroke.getKeyStroke('S',
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 
         open = new JMenuItem("Open...");
 
         undo = new JMenuItem("Undo      ");
         undo.addActionListener(this);
-        undo.setAccelerator(KeyStroke.getKeyStroke('Z', Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
+        undo.setAccelerator(KeyStroke.getKeyStroke('Z',
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 
         file.add(newWindow);
         file.add(save);
@@ -124,7 +131,10 @@ public class TextEditor extends JFrame implements ActionListener {
     private void saveFile(ActionEvent e) {
         if(e.getSource() == save) {
             JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setCurrentDirectory(new File("."));
+            fileChooser.setCurrentDirectory(new File("D:/"));
+
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(".txt", "txt", "text");
+            fileChooser.setFileFilter(filter);
 
             int response = fileChooser.showSaveDialog(null);
 
@@ -141,5 +151,3 @@ public class TextEditor extends JFrame implements ActionListener {
         }
     }
 }
-
-
