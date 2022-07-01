@@ -39,7 +39,7 @@ public class TextEditor extends JFrame implements ActionListener {
         file = new JMenu("File");
 
         edit = new JMenu("Edit");
-        edit.setMnemonic(KeyEvent.VK_UNDO);
+        edit.setMnemonic(KeyEvent.VK_E);
 
         newWindow = new JMenuItem("New window");
         newWindow.addActionListener(this);
@@ -48,7 +48,7 @@ public class TextEditor extends JFrame implements ActionListener {
 
         undo = new JMenuItem("Undo         Ctrl+Z");
         undo.addActionListener(this);
-        undo.setMnemonic(KeyEvent.VK_Z);
+        undo.setAccelerator(KeyStroke.getKeyStroke('Z', Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 
         file.add(newWindow);
         file.add(save);
