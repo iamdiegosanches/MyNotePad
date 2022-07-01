@@ -9,10 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.util.Scanner;
+import java.io.*;
 
 public class TextEditor extends JFrame implements ActionListener {
 
@@ -25,7 +22,7 @@ public class TextEditor extends JFrame implements ActionListener {
     JMenu edit;
     private JMenuItem newWindow;
     private JMenuItem save;
-    JMenuItem open;
+    private JMenuItem open;
     private JMenuItem undo;
 
     ImageIcon logo = new ImageIcon("src/nota.png");
@@ -143,23 +140,27 @@ public class TextEditor extends JFrame implements ActionListener {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File("D:/"));
 
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files", "txt");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(".txt", "txt", "text");
         fileChooser.setFileFilter(filter);
 
         int response = fileChooser.showOpenDialog(null);
 
         if(response == JFileChooser.APPROVE_OPTION) {
             File file = new File(fileChooser.getSelectedFile().getAbsolutePath());
+            this.setTitle("MyNotePad - " + file.getName());
+            String filePath = file.getPath();
+            try {
+                BufferedReader readFile = new BufferedReader(new FileReader(filePath));
+                String tempString1;
+                StringBuilder tempString2 = new StringBuilder();
 
-            try (Scanner fileIn = new Scanner(file)) {
-                if (file.isFile()) {
-                    while (fileIn.hasNextLine()) {
-                        String line = fileIn.nextLine() + "\n";
-                        textArea.append(line);
-                    }
-                }
-            } catch (FileNotFoundException e1) {
-                e1.printStackTrace();
+                while ((tempString1 = readFile.readLine()) != null)
+                    tempString2.append(tempString1).append("\n");
+
+                textArea.setText(tempString2.toString());
+                readFile.close();
+            }catch (Exception ae){
+                ae.printStackTrace();
             }
         }
 
@@ -168,6 +169,7 @@ public class TextEditor extends JFrame implements ActionListener {
     private void saveFile() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File("D:/"));
+        fileChooser.setSelectedFile(new File("D:/NewFile.txt"));
 
         FileNameExtensionFilter filter = new FileNameExtensionFilter(".txt", "txt", "text");
         fileChooser.setFileFilter(filter);
@@ -175,9 +177,8 @@ public class TextEditor extends JFrame implements ActionListener {
         int response = fileChooser.showSaveDialog(null);
 
         if(response == JFileChooser.APPROVE_OPTION) {
-            File file;
+            File file = new File(fileChooser.getSelectedFile().getAbsolutePath());
 
-            file = new File(fileChooser.getSelectedFile().getAbsolutePath());
             try (PrintWriter fileOut = new PrintWriter(file)) {
                 fileOut.println(textArea.getText());
             } catch (FileNotFoundException e1) {
