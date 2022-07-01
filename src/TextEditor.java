@@ -1,12 +1,16 @@
 package src;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.UndoManager;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 
 public class TextEditor extends JFrame implements ActionListener {
 
@@ -27,9 +31,7 @@ public class TextEditor extends JFrame implements ActionListener {
     public TextEditor() {
         createTextArea();
         createScrollPane();
-
         undoManager = new UndoManager();
-
         createMenuBar();
         createFrame();
     }
@@ -43,10 +45,13 @@ public class TextEditor extends JFrame implements ActionListener {
 
         newWindow = new JMenuItem("New window");
         newWindow.addActionListener(this);
+
         save = new JMenuItem("Save...");
+        save.addActionListener(this);
+
         open = new JMenuItem("Open...");
 
-        undo = new JMenuItem("Undo         Ctrl+Z");
+        undo = new JMenuItem("Undo      ");
         undo.addActionListener(this);
         undo.setAccelerator(KeyStroke.getKeyStroke('Z', Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 
@@ -70,10 +75,17 @@ public class TextEditor extends JFrame implements ActionListener {
         textArea = new JTextArea();
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
+        createTextAreaBorder();
         textArea.setFont(new Font("Arial", Font.PLAIN, 20));
         textArea.getDocument().addUndoableEditListener(
                 e -> undoManager.addEdit(e.getEdit())
         );
+    }
+
+    private void createTextAreaBorder() {
+        Border border = BorderFactory.createLineBorder(Color.BLACK);
+        textArea.setBorder(BorderFactory.createCompoundBorder(border,
+                BorderFactory.createEmptyBorder(3, 8, 10, 10)));
     }
 
     private void createFrame() {
@@ -82,11 +94,11 @@ public class TextEditor extends JFrame implements ActionListener {
         this.setSize(1000, 700);
         this.setLocationRelativeTo(null);
         this.setIconImage(logo.getImage());
-        addFrame();
+        addToFrame();
         this.setVisible(true);
     }
 
-    private void addFrame() {
+    private void addToFrame() {
         this.setJMenuBar(menuBar);
         this.add(textArea);
     }
@@ -105,5 +117,29 @@ public class TextEditor extends JFrame implements ActionListener {
                 cre.printStackTrace();
             }
         }
+
+        saveFile(e);
+    }
+
+    private void saveFile(ActionEvent e) {
+        if(e.getSource() == save) {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setCurrentDirectory(new File("."));
+
+            int response = fileChooser.showSaveDialog(null);
+
+            if(response == JFileChooser.APPROVE_OPTION) {
+                File file;
+
+                file = new File(fileChooser.getSelectedFile().getAbsolutePath());
+                try (PrintWriter fileOut = new PrintWriter(file)) {
+                    fileOut.println(textArea.getText());
+                } catch (FileNotFoundException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
     }
 }
+
+
