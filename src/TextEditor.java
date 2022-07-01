@@ -28,13 +28,11 @@ public class TextEditor extends JFrame implements ActionListener {
     ImageIcon logo = new ImageIcon("src/nota.png");
 
     public TextEditor() {
-        createFrame();
         createTextArea();
         createScrollPane();
         undoManager = new UndoManager();
         createMenuBar();
-        addToFrame();
-        this.setVisible(true);
+        createFrame();
     }
 
     private void createMenuBar() {
@@ -105,6 +103,8 @@ public class TextEditor extends JFrame implements ActionListener {
         this.setSize(1000, 700);
         this.setLocationRelativeTo(null);
         this.setIconImage(logo.getImage());
+        addToFrame();
+        this.setVisible(true);
     }
 
     private void addToFrame() {
@@ -159,8 +159,8 @@ public class TextEditor extends JFrame implements ActionListener {
 
                 textArea.setText(tempString2.toString());
                 readFile.close();
-            }catch (Exception ae){
-                ae.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
