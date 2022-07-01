@@ -16,7 +16,7 @@ import java.io.PrintWriter;
 public class TextEditor extends JFrame implements ActionListener {
 
     protected JTextArea textArea;
-    JScrollPane scrollPane;
+    protected JScrollPane scrollPane;
     protected UndoManager undoManager;
 
     private JMenuBar menuBar;
@@ -30,11 +30,13 @@ public class TextEditor extends JFrame implements ActionListener {
     ImageIcon logo = new ImageIcon("src/nota.png");
 
     public TextEditor() {
+        createFrame();
         createTextArea();
         createScrollPane();
         undoManager = new UndoManager();
         createMenuBar();
-        createFrame();
+        addToFrame();
+        this.setVisible(true);
     }
 
     private void createMenuBar() {
@@ -73,7 +75,7 @@ public class TextEditor extends JFrame implements ActionListener {
     }
 
     private void createScrollPane() {
-        scrollPane = new JScrollPane(textArea);
+        scrollPane = new JScrollPane(this.textArea);
         scrollPane.setPreferredSize(new Dimension(450, 450));
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     }
@@ -102,13 +104,11 @@ public class TextEditor extends JFrame implements ActionListener {
         this.setSize(1000, 700);
         this.setLocationRelativeTo(null);
         this.setIconImage(logo.getImage());
-        addToFrame();
-        this.setVisible(true);
     }
 
     private void addToFrame() {
         this.setJMenuBar(menuBar);
-        this.add(textArea);
+        this.add(scrollPane);
     }
 
     @Override
