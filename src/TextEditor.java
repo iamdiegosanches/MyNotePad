@@ -19,13 +19,13 @@ public class TextEditor extends JFrame implements ActionListener {
     JScrollPane scrollPane;
     protected UndoManager undoManager;
 
-    JMenuBar menuBar;
+    private JMenuBar menuBar;
     JMenu file;
     JMenu edit;
-    JMenuItem newWindow;
-    JMenuItem save;
+    private JMenuItem newWindow;
+    private JMenuItem save;
     JMenuItem open;
-    JMenuItem undo;
+    private JMenuItem undo;
 
     ImageIcon logo = new ImageIcon("src/nota.png");
 
@@ -82,6 +82,7 @@ public class TextEditor extends JFrame implements ActionListener {
         textArea = new JTextArea();
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
+        textArea.setTabSize(5);
         createTextAreaBorder();
         textArea.setFont(new Font("Arial", Font.PLAIN, 20));
         textArea.getDocument().addUndoableEditListener(
@@ -124,30 +125,31 @@ public class TextEditor extends JFrame implements ActionListener {
                 cre.printStackTrace();
             }
         }
-
-        saveFile(e);
+        if(e.getSource() == save) {
+            saveFile();
+        }
     }
 
-    private void saveFile(ActionEvent e) {
-        if(e.getSource() == save) {
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setCurrentDirectory(new File("D:/"));
+    private void saveFile() {
 
-            FileNameExtensionFilter filter = new FileNameExtensionFilter(".txt", "txt", "text");
-            fileChooser.setFileFilter(filter);
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File("D:/"));
 
-            int response = fileChooser.showSaveDialog(null);
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(".txt", "txt", "text");
+        fileChooser.setFileFilter(filter);
 
-            if(response == JFileChooser.APPROVE_OPTION) {
-                File file;
+        int response = fileChooser.showSaveDialog(null);
 
-                file = new File(fileChooser.getSelectedFile().getAbsolutePath());
-                try (PrintWriter fileOut = new PrintWriter(file)) {
-                    fileOut.println(textArea.getText());
-                } catch (FileNotFoundException e1) {
-                    e1.printStackTrace();
-                }
+        if(response == JFileChooser.APPROVE_OPTION) {
+            File file;
+
+            file = new File(fileChooser.getSelectedFile().getAbsolutePath());
+            try (PrintWriter fileOut = new PrintWriter(file)) {
+                fileOut.println(textArea.getText());
+            } catch (FileNotFoundException e1) {
+                e1.printStackTrace();
             }
         }
+
     }
 }
